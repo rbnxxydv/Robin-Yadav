@@ -1,0 +1,467 @@
+<!-- 
+  Project : NoWaiter Restro
+  Made by : Robin (apna naam yaha likh de)
+  Date : Nov 2026
+  Ye project maine HTML CSS JS se banaya hai
+  Restro me bina waiter ke order karne ke liye
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Robin ka Restro - NoWaiter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* maine yaha thoda simple css likha hai */
+body{
+  background:#fff8e7;
+  font-family: Arial, sans-serif;
+  margin:0;
+  padding:0;
+}
+.top{
+  background:black;
+  color:white;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+}
+.top h2{ margin:0; font-size:20px; }
+.top span{ color:orange; }
+
+.box{
+  background:white;
+  margin:15px;
+  padding:15px;
+  border-radius:12px;
+  border:1px solid #ddd;
+}
+input,select{
+  width:95%;
+  padding:10px;
+  margin:5px 0px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+button{
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.btn1{ background:orange; color:white; }
+.btn2{ background:green; color:white; }
+.btn3{ background:black; color:white; }
+.btn4{ background:red; color:white; }
+.item{
+  display:flex;
+  gap:10px;
+  border:1px solid #eee;
+  padding:8px;
+  margin:8px 0px;
+  border-radius:10px;
+}
+.item img{ width:65px; height:65px; border-radius:8px; }
+.chota{ font-size:13px; color:grey; }
+.tbl{
+  border:2px solid #ddd;
+  padding:12px;
+  text-align:center;
+  border-radius:10px;
+  background:white;
+}
+.tbl2{ background:green; color:white; }
+.tbl3{ background:#fca5a5; }
+.chupa{display:none;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h2>🍽️ Robin ka <span>Restro</span></h2>
+  <div id="uparWala">
+    <button class="btn1" onclick="pageDikhao('loginPage')">Login</button>
+  </div>
+</div>
+
+<!-- LOGIN WALA PART -->
+<div id="loginPage" class="box">
+  <h2>Login Karo</h2>
+  <p class="chota">Email dalo, naya ho to account ban jayega apne aap</p>
+  <input id="naam" placeholder="Apna naam likho - jaise Robin">
+  <input id="email" placeholder="Email - jaise robin@gmail.com">
+  <input id="phone" placeholder="Phone no.">
+  <button class="btn1" style="width:100%" onclick="loginKaro()">Login karo -></button>
+  <p class="chota">Note: No waiter, bas QR dikhao aur bahar jao.</p>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="mainPage" class="chupa">
+  <div style="margin:10px;">
+    <button onclick="tabDikhao('home')">Home</button>
+    <button onclick="tabDikhao('book')">Table Book</button>
+    <button onclick="tabDikhao('menu')">Order Karo</button>
+    <button onclick="tabDikhao('profile')">Mera Profile</button>
+    <button onclick="tabDikhao('review')">Review</button>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="box" style="background:#222;color:white;">
+    <h2 id="welcome">Welcome!</h2>
+    <p id="tableInfo">Abhi table book nahi hua</p>
+    <p>Total Kharcha: Rs <span id="kharchaHome">0</span> | Points: <span id="pointHome">0</span></p>
+    <p id="offerText" style="font-size:13px;color:orange"></p>
+  </div>
+  <div id="home2" class="box">
+    <h3>Aaj ka Offer 🔥</h3>
+    <p>1000 Rs kharcha karo aur <b>1 Ice Cream FREE</b> pao 🍦</p>
+    <button class="btn1" onclick="tabDikhao('menu')">Order Karo -></button>
+  </div>
+
+  <!-- TABLE BOOK -->
+  <div id="book" class="box chupa">
+    <h2>Table Book Karo</h2>
+    <p class="chota">Table choose karo, jo red hai wo pehle se booked hai</p>
+    <div id="tableWala" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+    <br>
+    Date: <input type="date" id="tareekh">
+    Time: <select id="samay"><option>12 PM</option><option>1 PM</option><option>7 PM</option><option>8 PM</option><option>9 PM</option></select>
+    Kitne log: <input type="number" id="log" value="2">
+    <button class="btn2" style="width:100%" onclick="tableBookKaro()">Table Pakka Karo</button>
+    <p id="bookMsg" style="color:green;font-weight:bold"></p>
+  </div>
+
+  <!-- MENU -->
+  <div id="menu" class="box chupa">
+    <h2>Menu - Bina Waiter ke Order</h2>
+    <p id="kiskiTable" class="chota"></p>
+    <div id="menuList"></div>
+    <h3>Cart 🛒</h3>
+    <div id="cartWala">Cart khaali hai</div>
+    <p><b>Total: Rs <span id="totalPaisa">0</span></b></p>
+    <label><input type="checkbox" id="freeWala" style="width:auto"> FREE Ice Cream use karna hai? (agar mila hai to)</label><br><br>
+    <button class="btn2" onclick="pageDikhao('payPage')">Pay Karo aur QR lo -></button>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="profile" class="box chupa">
+    <h2>Mera Profile</h2>
+    <p>Name: <b><span id="pNaam"></span></b></p>
+    <p>Email: <span id="pEmail"></span></p>
+    <p>Phone: <span id="pPhone"></span></p>
+    <p>Total Visits: <span id="pVisit"></span></p>
+    <p>Total Kharcha: Rs <span id="pKharcha"></span></p>
+    <p>Loyalty: <span id="pOffer"></span></p>
+    <h3>Order History</h3>
+    <div id="history"></div>
+    <br><button class="btn4" onclick="logoutKaro()">Logout</button>
+  </div>
+
+  <!-- REVIEW -->
+  <div id="review" class="box chupa">
+    <h2>Review Do ⭐</h2>
+    <select id="star"><option value="5">5 Star - Mast</option><option value="4">4 Star - Badhiya</option><option value="3">3 Star - Theek hai</option><option value="2">2 Star - Kharab</option><option value="1">1 Star - Bakwas</option></select>
+    <input id="reviewLikh" placeholder="Khaana kaisa laga?">
+    <button class="btn1" onclick="reviewBhejo()">Review Bhejo</button>
+    <div id="reviewList"></div>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div id="payPage" class="box chupa">
+  <h2>Payment 💳</h2>
+  <p>Pay karna hai: Rs <b id="payKarneWala">0</b></p>
+  <select><option>UPI - GPay</option><option>Card</option><option>Cash</option></select>
+  <input placeholder="UPI ID daalo">
+  <button class="btn2" style="width:100%" onclick="paymentKaro()">Pay Now</button><br><br>
+  <button class="btn3" style="width:100%" onclick="pageDikhao('mainPage')">Wapas Jao</button>
+</div>
+
+<!-- QR WALA PAGE -->
+<div id="qrPage" class="box chupa" style="text-align:center">
+  <h2 style="color:green">Payment Ho Gaya! ✅</h2>
+  <p>Ye QR Guard ko dikhao, seedha bahar jao.</p>
+  <img id="qrPhoto" src="" style="width:180px;height:180px;">
+  <p>Order ID: <b><span id="qrId"></span></b></p>
+  <p>Table: <span id="qrTable"></span> | Paid: Rs <span id="qrPaisa"></span></p>
+  <p id="qrFree" style="color:orange;font-weight:bold"></p>
+  <p class="chota">Status: PAID ✅ | Exit Allowed ✅</p>
+  <button class="btn3" onclick="pageDikhao('mainPage')">Home Pe Jao</button>
+</div>
+
+<script>
+// maine yaha saare variables upar likh diye taaki confusion na ho
+var user = null;
+var chunaTable = null;
+var myCart = {};
+var menuItems = [
+  {id:1, naam:"Paneer Butter Masala", paisa:220, photo:"https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=200"},
+  {id:2, naam:"Veg Biryani", paisa:180, photo:"https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200"},
+  {id:3, naam:"Pizza", paisa:299, photo:"https://images.unsplash.com/photo-1574071318508-1cdbab80a7c5?w=200"},
+  {id:4, naam:"Burger", paisa:99, photo:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200"},
+  {id:5, naam:"Cold Coffee", paisa:120, photo:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=200"},
+  {id:6, naam:"Ice Cream", paisa:80, photo:"https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200"},
+];
+var booked = [3]; // table 3 pehle se booked hai, demo ke liye
+var reviewsList = JSON.parse(localStorage.getItem('myReviews') || '[]');
+
+// page change karne wala function
+function pageDikhao(id){
+  var sab = ['loginPage','mainPage','payPage','qrPage'];
+  for(var i=0;i<sab.length;i++){
+    document.getElementById(sab[i]).classList.add('chupa');
+  }
+  document.getElementById(id).classList.remove('chupa');
+  if(id=='payPage'){
+    document.getElementById('payKarneWala').innerText = totalNikaalo();
+  }
+}
+
+function tabDikhao(id){
+  // saare tab chupao pehle
+  var tabs = ['home','home2','book','menu','profile','review'];
+  for(var i=0;i<tabs.length;i++){
+    var el = document.getElementById(tabs[i]);
+    if(el) el.classList.add('chupa');
+  }
+  // ab jo chahiye wo dikhao
+  if(id=='home'){
+    document.getElementById('home').classList.remove('chupa');
+    document.getElementById('home2').classList.remove('chupa');
+  } else {
+    document.getElementById(id).classList.remove('chupa');
+  }
+  if(id=='menu') menuDikhao();
+  if(id=='profile') profileDikhao();
+  if(id=='review') reviewDikhao();
+}
+
+// login wala kaam
+function loginKaro(){
+  var n = document.getElementById('naam').value;
+  var e = document.getElementById('email').value;
+  var p = document.getElementById('phone').value;
+  if(n=="" || e==""){
+    alert("Bhai naam aur email to daal de");
+    return;
+  }
+  var users = JSON.parse(localStorage.getItem('myUsers') || '{}');
+  if(!users[e]){
+    // naya user hai to naya banao
+    users[e] = {name:n, email:e, phone:p, kharcha:0, visit:0, orders:[]};
+  }
+  user = users[e];
+  user.visit = user.visit + 1;
+  localStorage.setItem('myUsers', JSON.stringify(users));
+  localStorage.setItem('currentUser', e);
+
+  document.getElementById('uparWala').innerHTML = "Hi, " + user.name + " <button class='btn4' onclick='logoutKaro()'>Logout</button>";
+  gharUpdateKaro();
+  pageDikhao('mainPage');
+  tabDikhao('home');
+  tableDikhao();
+  menuDikhao();
+}
+
+function logoutKaro(){
+  localStorage.removeItem('currentUser');
+  location.reload(); // simple tarika, page reload kar diya
+}
+
+function gharUpdateKaro(){
+  document.getElementById('welcome').innerText = "Welcome, " + user.name + "!";
+  document.getElementById('kharchaHome').innerText = user.kharcha;
+  document.getElementById('pointHome').innerText = Math.floor(user.kharcha/10);
+  var bacha = 1000 - (user.kharcha % 1000);
+  if(user.kharcha >= 1000){
+    document.getElementById('offerText').innerText = "Tujhe FREE Ice Cream mili hai! 🍦 Order me use kar le.";
+  } else {
+    document.getElementById('offerText').innerText = "Bas Rs " + bacha + " aur kharcha kar, FREE Ice Cream milegi.";
+  }
+  if(user.table){
+    document.getElementById('tableInfo').innerText = "Teri Table: " + user.table + " | " + user.date + " " + user.time;
+  }
+}
+
+// table dikhane wala
+function tableDikhao(){
+  var jagah = document.getElementById('tableWala');
+  jagah.innerHTML = "";
+  for(var i=1;i<=8;i++){
+    var btn = document.createElement('button');
+    btn.className = 'tbl';
+    if(booked.includes(i)) btn.className = 'tbl tbl3';
+    if(chunaTable==i) btn.className = 'tbl tbl2';
+    btn.innerHTML = "Table " + i + "<br><small>" + (i<=4 ? "2 log" : "4 log") + "</small>";
+    // ye wala part thoda tricky hai, isliye dhyan se
+    (function(num){
+      btn.onclick = function(){
+        if(booked.includes(num)){ alert("Ye to pehle se booked hai"); return; }
+        chunaTable = num;
+        tableDikhao();
+      }
+    })(i);
+    jagah.appendChild(btn);
+  }
+}
+
+function tableBookKaro(){
+  if(chunaTable==null){ alert("Pehle table to chun"); return; }
+  var d = document.getElementById('tareekh').value || "Aaj";
+  var t = document.getElementById('samay').value;
+  var l = document.getElementById('log').value;
+  user.table = "Table " + chunaTable;
+  user.date = d; user.time = t; user.persons = l;
+  // user ko save karo
+  var users = JSON.parse(localStorage.getItem('myUsers') || '{}');
+  users[user.email] = user;
+  localStorage.setItem('myUsers', JSON.stringify(users));
+  document.getElementById('bookMsg').innerText = "Ho gaya! Table " + chunaTable + " book ho gaya " + d + " " + t + " ko.";
+  gharUpdateKaro();
+}
+
+// menu dikhao
+function menuDikhao(){
+  var div = document.getElementById('menuList');
+  div.innerHTML = "";
+  document.getElementById('kiskiTable').innerText = user.table ? "Order for: " + user.table : "Pehle table book kar le, ya takeaway le le";
+  for(var i=0;i<menuItems.length;i++){
+    var m = menuItems[i];
+    div.innerHTML += '<div class="item"><img src="'+m.photo+'"><div style="flex:1"><b>'+m.naam+'</b><br>Rs '+m.paisa+'</div><button class="btn1" onclick="cartMeDaalo('+m.id+')">+ Add</button></div>';
+  }
+  cartDikhao();
+}
+
+function cartMeDaalo(id){
+  if(myCart[id]) myCart[id] = myCart[id] + 1;
+  else myCart[id] = 1;
+  cartDikhao();
+}
+
+function totalNikaalo(){
+  var total = 0;
+  for(var k in myCart){
+    for(var i=0;i<menuItems.length;i++){
+      if(menuItems[i].id == k) total += menuItems[i].paisa * myCart[k];
+    }
+  }
+  // agar free ice cream use ki to 80 rs kam kar do
+  var check = document.getElementById('freeWala');
+  if(check && check.checked && user.kharcha >= 1000){
+    total = total - 80;
+    if(total<0) total=0;
+  }
+  return total;
+}
+
+function cartDikhao(){
+  var div = document.getElementById('cartWala');
+  var keys = Object.keys(myCart);
+  if(keys.length==0){ div.innerHTML = "Cart khaali hai"; }
+  else{
+    div.innerHTML = "";
+    for(var i=0;i<keys.length;i++){
+      var id = keys[i];
+      for(var j=0;j<menuItems.length;j++){
+        if(menuItems[j].id == id){
+          div.innerHTML += "<p>" + menuItems[j].naam + " x " + myCart[id] + " = Rs " + (menuItems[j].paisa * myCart[id]) + "</p>";
+        }
+      }
+    }
+  }
+  document.getElementById('totalPaisa').innerText = totalNikaalo();
+  document.getElementById('payKarneWala').innerText = totalNikaalo();
+}
+
+// payment wala
+function paymentKaro(){
+  var total = totalNikaalo();
+  if(total<=0 && Object.keys(myCart).length==0){ alert("Cart to khaali hai bhai"); return; }
+  var orderId = 'RW' + Math.floor(Math.random()*90000+10000);
+  var items = "";
+  for(var k in myCart){
+    for(var i=0;i<menuItems.length;i++) if(menuItems[i].id==k) items += menuItems[i].naam + " x " + myCart[k] + ", ";
+  }
+  user.kharcha = user.kharcha + total;
+  user.orders.push({id:orderId, items:items, total:total, date:new Date().toLocaleString()});
+  var users = JSON.parse(localStorage.getItem('myUsers') || '{}');
+  users[user.email] = user;
+  localStorage.setItem('myUsers', JSON.stringify(users));
+
+  // QR banane ke liye api use ki hai
+  var qrData = "Robin Restro PAID Order:" + orderId + " Table:" + (user.table||'Takeaway') + " Amount:" + total + " Exit:ALLOWED";
+  document.getElementById('qrPhoto').src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(qrData);
+  document.getElementById('qrId').innerText = orderId;
+  document.getElementById('qrTable').innerText = user.table || 'Takeaway';
+  document.getElementById('qrPaisa').innerText = total;
+  if(user.kharcha>=1000) document.getElementById('qrFree').innerText = "🎉 FREE Ice Cream mil gayi!";
+  myCart = {};
+  gharUpdateKaro();
+  pageDikhao('qrPage');
+}
+
+function profileDikhao(){
+  document.getElementById('pNaam').innerText = user.name;
+  document.getElementById('pEmail').innerText = user.email;
+  document.getElementById('pPhone').innerText = user.phone || '-';
+  document.getElementById('pVisit').innerText = user.visit;
+  document.getElementById('pKharcha').innerText = user.kharcha;
+  document.getElementById('pOffer').innerText = user.kharcha>=1000 ? "FREE Ice Cream Mili 🍦" : "Rs " + (1000 - (user.kharcha%1000)) + " aur kharcha kar";
+  var h = document.getElementById('history');
+  if(user.orders.length==0) h.innerHTML = "Abhi koi order nahi hai";
+  else{
+    h.innerHTML = "";
+    for(var i=0;i<user.orders.length;i++){
+      var o = user.orders[i];
+      h.innerHTML += "<p>• " + o.id + " - " + o.items + " - Rs " + o.total + "</p>";
+    }
+  }
+}
+
+function reviewBhejo(){
+  var s = document.getElementById('star').value;
+  var t = document.getElementById('reviewLikh').value;
+  if(t==""){ alert("Kuch to likh de"); return; }
+  reviewsList.unshift({name:user.name, star:s, text:t});
+  localStorage.setItem('myReviews', JSON.stringify(reviewsList));
+  document.getElementById('reviewLikh').value = "";
+  reviewDikhao();
+  alert("Review ke liye thanks!");
+}
+
+function reviewDikhao(){
+  var div = document.getElementById('reviewList');
+  if(reviewsList.length==0) div.innerHTML = "Abhi koi review nahi";
+  else{
+    div.innerHTML = "";
+    for(var i=0;i<reviewsList.length;i++){
+      var r = reviewsList[i];
+      var stars = "";
+      for(var k=0;k<r.star;k++) stars += "⭐";
+      div.innerHTML += "<div class='box' style='margin:5px 0px;padding:8px'><b>"+r.name+"</b> "+stars+"<p>"+r.text+"</p></div>";
+    }
+  }
+}
+
+// page khulte hi ye chalega - agar pehle se login hai to direct andar
+window.onload = function(){
+  var cur = localStorage.getItem('currentUser');
+  if(cur){
+    var users = JSON.parse(localStorage.getItem('myUsers') || '{}');
+    if(users[cur]){
+      user = users[cur];
+      document.getElementById('uparWala').innerHTML = "Hi, " + user.name + " <button class='btn4' onclick='logoutKaro()'>Logout</button>";
+      gharUpdateKaro();
+      pageDikhao('mainPage');
+      tabDikhao('home');
+    }
+  }
+  tableDikhao();
+  menuDikhao();
+  reviewDikhao();
+  document.getElementById('tareekh').valueAsDate = new Date();
+}
+</script>
+</body>
+</html>
